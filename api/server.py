@@ -19,7 +19,13 @@ from fastapi.staticfiles import StaticFiles
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 
 ROOT = Path(__file__).parent
-DATA_DIR = Path(os.environ.get('DATA_DIR', str(ROOT / 'data')))
+
+# Kiểm tra xem có đang chạy trên Vercel không, nếu có thì dùng thư mục /tmp có quyền ghi
+if os.environ.get('VERCEL'):
+    DATA_DIR = Path('/tmp/data')
+else:
+    DATA_DIR = Path(os.environ.get('DATA_DIR', str(ROOT / 'data')))
+
 UPLOAD_DIR = DATA_DIR / 'uploads'
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
